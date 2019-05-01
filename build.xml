@@ -6,6 +6,7 @@
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="Calculator"
               	xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
@@ -23,6 +24,7 @@
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -42,28 +44,45 @@
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="New_configuration (1)">
+        <java classname="" failonerror="true" fork="yes">
+            <classpath refid="Calculator.classpath"/>
+        </java>
+    </target>
+    <target name="CalculatorTest">
+        <mkdir dir="${junit.output.dir}"/>
     	<taskdef uri="antlib:rog.jacoco.ant" resource ="org/jacoco/ant/antlib.xml">
     			<classpath path = "../jacocoant.jar"/>
     	</taskdef>
     	<jacoco:coverage>
-        <java classname="" failonerror="true" fork="yes">
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="team2_test_004.CalculatorTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
             <classpath refid="Calculator.classpath"/>
-        </java>
-        	</jacoco:coverage>
-        	<jacoco:report>
-        		<executiondata>
-        			<file file="jacoco.exec"/>
-        		</executiondata>
-        		
-        		<structure name="java coverage">
-        			<classfiles>
-        				<fileset dir="bin"/>
-        			</classfiles>
-        			<sourcefiles encoding ="UTF-8">
-        					<fileset dir="src"/>
-        			</sourcefiles>
-        		</structure>
-        		<html destdir="${junit.output.dir}/coverage-report"/>
-        	</jacoco:report>
+        </junit>
+    	</jacoco:coverage>
+    	<jacoco:report>
+    		<executiondata>
+    			<file file="jacoco.exec"/>
+    		</executiondata>
+    		
+    		<structure name="java coverage">
+    			<classfiles>
+    				<fileset dir="bin"/>
+    			</classfiles>
+    			<sourcefiles encoding ="UTF-8">
+    					<fileset dir="src"/>
+    			</sourcefiles>
+    		</structure>
+    		<html destdir="${junit.output.dir}/coverage-report"/>
+    	</jacoco:report>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
     </target>
 </project>
