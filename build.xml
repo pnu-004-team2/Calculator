@@ -9,36 +9,20 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
-    <path id="Calculator.classpath">
-        <pathelement location="bin"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="../../.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="../../.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar"/>
     	<fileset dir = "${ant.home}/lib" includes = "*.jar"/>
     	<fileset dir = "${ant.home}/lib/junit" includes = "*.jar"/>
     </path>
+    <path id="Calculator.classpath">
+        <pathelement location="bin"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
     <target name="init">
         <mkdir dir="bin"/>
-    	<taskdef uri="antlib:rog.jacoco.ant" resource ="org/jacoco/ant/antlib.xml">
-    			<classpath path = "../jacocoant.jar"/>
-    	</taskdef>
-    	<jacoco:coverage>
-    	</jacoco:coverage>
-    	<jacoco:report>
-    		<executiondata>
-    			<file file="jacoco.exec"/>
-    		</executiondata>
-    		
-    		<structure name="java coverage">
-    			<classfiles>
-    				<fileset dir="bin"/>
-    			</classfiles>
-    			<sourcefiles encoding ="UTF-8">
-    					<fileset dir="src"/>
-    			</sourcefiles>
-    		</structure>
-    		<html destdir="${junit.output.dir}/coverage-report"/>
-    	</jacoco:report>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -58,8 +42,28 @@
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="New_configuration (1)">
+    	<taskdef uri="antlib:rog.jacoco.ant" resource ="org/jacoco/ant/antlib.xml">
+    			<classpath path = "../jacocoant.jar"/>
+    	</taskdef>
+    	<jacoco:coverage>
         <java classname="" failonerror="true" fork="yes">
             <classpath refid="Calculator.classpath"/>
         </java>
+        	</jacoco:coverage>
+        	<jacoco:report>
+        		<executiondata>
+        			<file file="jacoco.exec"/>
+        		</executiondata>
+        		
+        		<structure name="java coverage">
+        			<classfiles>
+        				<fileset dir="bin"/>
+        			</classfiles>
+        			<sourcefiles encoding ="UTF-8">
+        					<fileset dir="src"/>
+        			</sourcefiles>
+        		</structure>
+        		<html destdir="${junit.output.dir}/coverage-report"/>
+        	</jacoco:report>
     </target>
 </project>

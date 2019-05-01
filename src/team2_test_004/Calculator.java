@@ -1,3 +1,4 @@
+package team2_test_004;
 
 public class Calculator {
 	public double add(double number1,double number2) {
