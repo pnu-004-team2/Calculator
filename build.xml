@@ -3,16 +3,39 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="Calculator">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="Calculator"
+              	xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
     <path id="Calculator.classpath">
         <pathelement location="bin"/>
+    	<fileset dir = "${ant.home}/lib" includes = "*.jar"/>
+    	<fileset dir = "${ant.home}/lib/junit" includes = "*.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
+    	<taskdef uri="antlib:rog.jacoco.ant" resource ="org/jacoco/ant/antlib.xml">
+    			<classpath path = "../jacocoant.jar"/>
+    	</taskdef>
+    	<jacoco:coverage>
+    	</jacoco:coverage>
+    	<jacoco:report>
+    		<executiondata>
+    			<file file="jacoco.exec"/>
+    		</executiondata>
+    		
+    		<structure name="java coverage">
+    			<classfiles>
+    				<fileset dir="bin"/>
+    			</classfiles>
+    			<sourcefiles encoding ="UTF-8">
+    					<fileset dir="src"/>
+    			</sourcefiles>
+    		</structure>
+    		<html destdir="${junit.output.dir}/coverage-report"/>
+    	</jacoco:report>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
